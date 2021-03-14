@@ -1,0 +1,14 @@
+DELIMITER //
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetLookupData` ()
+BEGIN
+
+select *
+from play_ball.lookup
+WHERE 1=1                            
+order by data_type,
+data_code,
+data_text;
+
+END //
+DELIMITER //

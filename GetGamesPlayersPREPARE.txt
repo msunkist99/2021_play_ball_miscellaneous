@@ -1,0 +1,117 @@
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetGamesPlayers`(
+IN game_year int,
+IN game_id varchar(12), 
+IN game_visiting_team varchar(3),
+IN game_home_team varchar(3), 
+IN player_id varchar(8)
+)
+BEGIN
+
+SET @game_year = game_year;
+if @game_year IS NULL then
+    SET @where_game_year = " and game.year = game.year";
+else    
+    SET @where_game_year = CONCAT(" and game.year = ", @game_year);
+end if;
+
+SET @game_id = game_id;
+if @game_id IS NULL then
+    SET @where_game_id = " and game.id = game.id";
+else    
+    SET @where_game_id = CONCAT(" and game.id = '", @game_id, "'");
+end if;
+
+SET @game_visiting_team = game_visiting_team;
+if @game_visiting_team IS NULL then
+    SET @where_game_visiting_team = " and game.visiting_team = game.visiting_team";
+else    
+    SET @where_game_visiting_team = CONCAT(" and game.visiting_team = '", @game_visiting_team, "'");
+end if;
+
+SET @game_home_team = game_home_team;
+if @game_home_team IS NULL then
+    SET @where_game_home_team = " and game.home_team = game.home_team";
+else    
+    SET @where_game_home_team = CONCAT(" and game.home_team = '", @game_home_team, "'");
+end if;
+
+SET @player_id = player_id;
+if @player_id IS NULL then
+    SET @where_player_id = " and player.id = player.id";
+else    
+    SET @where_player_id = CONCAT(" and player.id = '", @player_id, "'");
+end if;
+
+set @select = "select game.id as game_id,
+date_format(game.date, '%y/%m/%d') as game_date,
+game.year,
+game.game_type, gameType.data_text as game_type_text,
+game.day_night, dayNight.data_text as day_night_text,
+game.game_num, gameNum.data_text as game_num_text,
+game.home_team, homeTeam.name as home_team_name, homeTeam.city as home_team_city, homeTeam.league_id as home_team_league_id, homeLeague.data_text as home_team_league,
+game.visiting_team, visitingTeam.name as visiting_team_name, visitingTeam.city as visiting_team_city, visitingTeam.league_id as visiting_team_league_id, visitingLeague.data_text as visiting_team_league,
+
+player.id as player_id,
+player.last_name,
+player.first_name,
+player.bats, bats.data_text as bats_text,
+player.pitches, pitches.data_text as throws_text,
+
+game_player.start_sub, startSub.data_text as start_sub_text, 
+game_player.visit_home, visitHome.data_text as player_home_visit_text,
+game_player.batting_order,
+game_player.field_position, fieldPosition.data_text as player_field_position
+
+from play_ball.game game
+join play_ball.team homeTeam on game.home_team = homeTeam.id
+                            and game.year = homeTeam.year
+join play_ball.team visitingTeam on game.visiting_team = visitingTeam.id
+                            and game.year = visitingTeam.year
+join play_ball.lookup homeLeague on homeLeague.data_type = 'league'
+                     and homeLeague.data_code = homeTeam.league_id
+join play_ball.lookup visitingLeague on visitingLeague.data_type = 'league'
+					 and visitingLeague.data_code = visitingTeam.league_id
+join play_ball.lookup dayNight on dayNight.data_type = 'day_night'
+					 and dayNight.data_code = game.day_night
+join play_ball.lookup gameNum on gameNum.data_type = 'game_num'
+                     and gameNum.data_code = game.game_num    
+join play_ball.lookup gameType on gameType.data_type = 'game_type'                     
+                     and gameType.data_code = game.game_type
+                     
+join play_ball.game_player on game.id = game_player.game_id
+join play_ball.lookup startSub on startSub.data_type = 'start_sub'
+					and startSub.data_code = game_player.start_sub
+join play_ball.lookup visitHome on visitHome.data_type = 'visit_home'
+					and visitHome.data_code = game_player.visit_home
+join play_ball.lookup fieldPosition on fieldPosition.data_type = 'field_position'
+					and fieldPosition.data_code = game_player.field_position   
+                    
+join play_ball.player on game_player.player_id = player.id
+                    and player.year = game.year
+					and player.team_id = 
+                   (case 
+						when game_player.visit_home = 0 then game.visiting_team
+						else 						game.home_team
+                    end    )
+join play_ball.lookup bats on bats.data_type = 'left_right'
+                and bats.data_code = player.bats
+join play_ball.lookup pitches on pitches.data_type = 'left_right'
+                and pitches.data_code = player.pitches
+join play_ball.team on player.team_id = team.id
+                   and player.year = team.year
+join play_ball.lookup league on league.data_type = 'league'
+					 and team.league_id = league.data_code
+where 1=1 ";
+
+SET @orderBy = ' order by game.date,
+game_player.visit_home,
+game_player.start_sub,
+game_player.batting_order';
+
+SET @query = CONCAT(@select, @where_game_year, @where_game_id, @where_game_visiting_team, @where_game_home_team, @where_player_id, @orderBy );
+
+PREPARE stmt FROM @query;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;
+
+END

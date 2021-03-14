@@ -175,5 +175,31 @@ CREATE TABLE play_ball.lookup (
     PRIMARY KEY (data_type, data_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
+---- ALTER TABLE play_ball.game_player ADD PRIMARY KEY (game_id, player_id, start_sub, batting_order, field_position)    ;
 
+CREATE INDEX idx_gameID
+ON play_ball.game_player (game_id);
 
+CREATE INDEX idx_playerID
+on play_ball.game_player (player_id);
+
+CREATE INDEX idx_gameID_player_ID
+on play_ball.game_player (game_id, player_id);
+
+CREATE INDEX idx_player_playerID
+on play_ball.player (id);
+
+CREATE INDEX idx_game_gameID
+on play_ball.game (id);
+
+CREATE INDEX idx_team_teamID
+on play_ball.team (id);
+
+CREATE INDEX idx_player_playerID_teamID
+on play_ball.player (id, team_id);
+
+CREATE INDEX idx_player_playerID_teamID_year
+on play_ball.player (id, team_id, year);
+
+CREATE INDEX idx_lookup
+on play_ball.lookup (data_type, data_code);
