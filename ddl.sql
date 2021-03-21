@@ -174,6 +174,11 @@ CREATE TABLE play_ball.lookup (
     data_text varchar(25) not null,
     PRIMARY KEY (data_type, data_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE play_ball.disclaimer (
+	line_num int NOT NULL,
+    line_text varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
     
 ---- ALTER TABLE play_ball.game_player ADD PRIMARY KEY (game_id, player_id, start_sub, batting_order, field_position)    ;
 

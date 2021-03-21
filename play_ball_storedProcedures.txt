@@ -1,0 +1,114 @@
+DELIMITER //
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetLookupData` ()
+BEGIN
+
+select *
+from play_ball.lookup
+WHERE 1=1                            
+order by data_type,
+data_code,
+data_text;
+
+END //
+DELIMITER //
+
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetYears`()
+BEGIN
+
+select distinct(year)
+from play_ball.game
+WHERE 1=1                            
+order by year;
+
+END
+
+
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetYearGameTypes`(
+IN game_year int)
+BEGIN
+
+SELECT distinct(game_type), year, data_text
+FROM play_ball.game
+JOIN lookup on data_type = 'game_type'
+           and data_code = game_type
+WHERE 1=1    
+  AND year = game_year
+order by game_type;
+
+END
+
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetYearGameTypesGames`(
+IN gameYear int,
+IN gameType varchar(1))
+BEGIN
+
+SELECT  
+game.id,
+game.site,
+game.home_team,
+game.visiting_team,
+date_format(game.date, "%m/%d/%y") as game_date,
+game.day_night,
+dayNight.data_text as day_night_text,
+game.game_num,
+gameNum.data_text as game_num_text,
+game.year,
+game.game_type,
+gameType.data_text as game_type_text,
+homeTeam.Name as home_team_name, 
+homeTeam.city as home_team_city, 
+visitingTeam.name as visiting_team_name, 
+visitingTeam.city as visiting_team_city
+FROM play_ball.game
+join play_ball.team homeTeam on game.home_team = homeTeam.id
+                            and homeTeam.year = game.year
+join play_ball.team visitingTeam on game.visiting_team = visitingTeam.id
+							    and visitingTeam.year = game.year
+join lookup dayNight on dayNight.data_type = 'day_night'
+                    and dayNight.data_code = game.day_Night
+join lookup gameNum on gameNum.data_type =  'game_num'
+                   and gameNum.data_code = game.game_num    
+join lookup gameType on gameType.data_type = 'game_type'
+                    and gameType.data_code = game.game_type                   
+WHERE 1=1    
+  AND game.year = gameYear
+  and game.game_type = gameType
+order by game.date, game.id, game.game_num;
+
+END
+
+
+
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `GetYearGameTypesPlayers`(
+IN gameYear int,
+IN gameType varchar(1))
+BEGIN
+
+SELECT distinct(player.id), player.last_name, player.first_name, player.team_id, team.name, team.city
+FROM play_ball.game
+join play_ball.game_player on game.id = game_player.game_id
+join play_ball.player on game_player.player_id = player.id
+  and player.team_id = 
+                   (case 
+						when game_player.visit_home = 0 then game.visiting_team
+						else                                 game.home_team
+                    end    )
+join play_ball.team on team.id =
+                    (case 
+						when game_player.visit_home = 0 then game.visiting_team
+						else                                 game.home_team
+                    end    )         
+WHERE 1=1    
+  AND game.year = gameYear
+  and game.game_type = gameType
+order by player.team_id, player.id;  
+
+END
