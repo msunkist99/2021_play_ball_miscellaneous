@@ -32,13 +32,13 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `GetYearGameTypes`(
 IN game_year int)
 BEGIN
 
-SELECT distinct(game_type), year, data_text
+SELECT distinct(game_type), year, data_text, data_sort_order
 FROM play_ball.game
 JOIN lookup on data_type = 'game_type'
            and data_code = game_type
 WHERE 1=1    
   AND year = game_year
-order by game_type;
+order by data_sort_order;
 
 END
 
@@ -86,7 +86,6 @@ END
 
 
 
-
 CREATE DEFINER=`root`@`localhost` PROCEDURE `GetYearGameTypesPlayers`(
 IN gameYear int,
 IN gameType varchar(1))
@@ -109,6 +108,6 @@ join play_ball.team on team.id =
 WHERE 1=1    
   AND game.year = gameYear
   and game.game_type = gameType
-order by player.team_id, player.id;  
+order by player.last_name, player.first_name, player.team_id;  
 
 END

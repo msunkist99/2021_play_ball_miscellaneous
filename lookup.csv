@@ -1,33 +1,33 @@
-"data_type";"data_code";"data_text"
-"day_night";"D";"day"
-"day_night";"N";"night"
-"field_position";"1";"pitcher"
-"field_position";"10";"designated hitter"
-"field_position";"11";"pinch hitter"
-"field_position";"12";"pinch runner"
-"field_position";"2";"catcher"
-"field_position";"3";"first baseman"
-"field_position";"4";"second baseman"
-"field_position";"5";"third baseman"
-"field_position";"6";"shortstop"
-"field_position";"7";"left field"
-"field_position";"8";"center field"
-"field_position";"9";"right field"
-"game_num";"0";"1 of 1"
-"game_num";"1";"1 of 2"
-"game_num";"2";"2 of 2"
-"game_type";"1";"division 1"
-"game_type";"2";"division 2"
-"game_type";"L";"league championship"
-"game_type";"R";"regular season"
-"game_type";"S";"world series"
-"game_type";"W";"wild card"
-"league";"A";"American"
-"league";"N";"National"
-"left_right";"B";"both"
-"left_right";"L";"left"
-"left_right";"R";"right"
-"start_sub";"0";"starting"
-"start_sub";"1";"substitute"
-"visit_home";"0";"visiting"
-"visit_home";"1";"home"
+"data_type";"data_code";"data_text";"data_sort_order"
+"day_night";"D";"day";0
+"day_night";"N";"night";0
+"field_position";"1";"pitcher";0
+"field_position";"10";"designated hitter";0
+"field_position";"11";"pinch hitter";0
+"field_position";"12";"pinch runner";0
+"field_position";"2";"catcher";0
+"field_position";"3";"first baseman";0
+"field_position";"4";"second baseman";0
+"field_position";"5";"third baseman";0
+"field_position";"6";"shortstop";0
+"field_position";"7";"left field";0
+"field_position";"8";"center field";0
+"field_position";"9";"right field";0
+"game_num";"0";"1 of 1";0
+"game_num";"1";"1 of 2";0
+"game_num";"2";"2 of 2";0
+"game_type";"1";"division 1";30
+"game_type";"2";"division 2";40
+"game_type";"L";"league championship";50
+"game_type";"R";"regular season";10
+"game_type";"S";"world series";60
+"game_type";"W";"wild card";20
+"league";"A";"American";0
+"league";"N";"National";0
+"left_right";"B";"both";0
+"left_right";"L";"left";0
+"left_right";"R";"right";0
+"start_sub";"0";"starting";0
+"start_sub";"1";"substitute";0
+"visit_home";"0";"visiting";0
+"visit_home";"1";"home";0

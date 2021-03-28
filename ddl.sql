@@ -168,12 +168,16 @@ CREATE TABLE play_ball.team (
     PRIMARY KEY (id, year, game_type)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE play_ball.lookup (
-	data_type varchar(25) NOT NULL,
-    data_code varchar(10) NOT NULL,
-    data_text varchar(25) not null,
-    PRIMARY KEY (data_type, data_code)
+
+CREATE TABLE `lookup` (
+  `data_type` varchar(25) NOT NULL,
+  `data_code` varchar(10) NOT NULL,
+  `data_text` varchar(25) NOT NULL,
+  `data_sort_order` int DEFAULT NULL,
+  PRIMARY KEY (`data_type`,`data_code`),
+  KEY `idx_lookup` (`data_type`,`data_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 CREATE TABLE play_ball.disclaimer (
 	line_num int NOT NULL,
@@ -208,3 +212,14 @@ on play_ball.player (id, team_id, year);
 
 CREATE INDEX idx_lookup
 on play_ball.lookup (data_type, data_code);
+
+
+CREATE TABLE `user` (
+  `id` int NOT NULL,
+  `pw_hash` varchar(255) DEFAULT NULL,
+  `username` varchar(255) DEFAULT NULL,
+  `user_email` varchar(255) DEFAULT NULL,
+  `user_first_name` varchar(255) DEFAULT NULL,
+  `user_last_name` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
